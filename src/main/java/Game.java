@@ -1,48 +1,69 @@
 public class Game {
+    private int count;
 
-    private void officialMoves(int[][] field, Gamer gamer, QueueRealization queue) {
+    public void startGame() {
+        Field field = new Field(6, 6);
+        field.fillField();
+        field.printField();
 
-        field[gamer.getxPointGamer()][gamer.getyPointGamer()] += 1;
-        gamer.setxPointGamer(111);
-        queue.remove();
-    }
+        count = 0;
 
-    public void startGame(int[][] field) {
-        if (field.length < 4) System.out.println("Нужно больше поле");
+        if (field.getArr().length < 4) System.out.println("Нужно больше поле");
         else {
             QueueRealization queue = new QueueRealization();
-            Gamer gamer = new Gamer(1, 2);
-            queue.insert(gamer.getxPointGamer(), gamer.getyPointGamer());
+            Exits exits = new Exits();
+            Point gamer = new Point(1, 2);
+
+            queue.insert(1, 2); //наша начальная точка
 
             while (queue.getFrontIsNull() != null) {
 
-                gamer.setxPointGamer(queue.getFrontIsNull().getxPointGamer());
+                gamer.setX(queue.getFrontIsNull().getX());
+                gamer.setY(queue.getFrontIsNull().getY());
 
-                gamer.setxPointGamer(queue.getFrontIsNull().getyPointGamer());
+                count = field.changeCount(gamer.getX(), (gamer.getY()));
 
-
-                if (field[queue.getFrontIsNull().getxPointGamer()][queue.getFrontIsNull().getyPointGamer() + 1] > 0) {
-                    queue.insert(queue.getFrontIsNull().getxPointGamer(), queue.getFrontIsNull().getyPointGamer() + 1);
-//
-//                } if (field[queue.getFrontIsNull().getxPointGamer() + 1][queue.getFrontIsNull().getyPointGamer()] > 0) {
-//                    queue.insert(gamer.getxPointGamer() + 1, gamer.getyPointGamer());
-//
-//                }  if (field[queue.getFrontIsNull().getxPointGamer()][queue.getFrontIsNull().getyPointGamer() - 1] > 0) {
-//                    queue.insert(gamer.getxPointGamer(), gamer.getyPointGamer() - 1);
-//
-//                }  if (field[queue.getFrontIsNull().getxPointGamer() - 1][queue.getFrontIsNull().getyPointGamer()] > 0) {
-//                    queue.insert(gamer.getxPointGamer() - 1, gamer.getyPointGamer());
-//
-//                }
-
-                    field[queue.getFrontIsNull().getxPointGamer()][queue.getFrontIsNull().getyPointGamer()]++;
-                    queue.remove();
-
+                //проверяем по выходам
+                for (int i = 0; i < exits.getExits().size(); i++) {
+                    if (queue.getQueue().peek().getXnY() == exits.getExits(i).getXnY()) {
+                        field.setArrIndex(gamer.getX(), gamer.getY(), 0);
+                        System.out.println("_____");
+                        field.printField();
+                        queue.remove();
+                    }
                 }
+
+                //идет наверх
+                if (field.getArr()[gamer.getX() - 1][gamer.getY()] != -1 &&
+                        field.getArr()[gamer.getX() - 1][gamer.getY()] <= 0) {
+                    queue.insert(gamer.getX() - 1, gamer.getY());
+                    field.setArrIndex(gamer.getX() - 1, gamer.getY(), count);
+                }
+                //идем направо
+                if (field.getArr()[gamer.getX()][gamer.getY() + 1] != -1 &&
+                        field.getArr()[gamer.getX()][gamer.getY() + 1] <= 0) {
+                    queue.insert(gamer.getX(), gamer.getY() + 1);
+                    field.setArrIndex(gamer.getX(), gamer.getY() + 1, count);
+                }
+                //идем вниз
+                if (field.getArr()[gamer.getX() + 1][gamer.getY()] != -1 &&
+                        field.getArr()[gamer.getX() + 1][gamer.getY()] <= 0) {
+                    queue.insert(gamer.getX() + 1, gamer.getY());
+                    field.setArrIndex(gamer.getX() + 1, gamer.getY(), count);
+
+                //идем влево
+                }
+                if (field.getArr()[gamer.getX()][gamer.getY() - 1] != -1 &&
+                        field.getArr()[gamer.getX()][gamer.getY() - 1] <= 0) {
+                    queue.insert(gamer.getX(), gamer.getY() - 1);
+                    field.setArrIndex(gamer.getX(), gamer.getY() - 1, count);
+                }
+                queue.remove();
             }
         }
     }
 }
+
 
 
 

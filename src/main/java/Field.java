@@ -1,20 +1,26 @@
 //public class Field{
 class Field {
-    private int[][] walls;
+
     private int[][] arr;
 
     public Field(int sizeX, int sizeY) {
-        walls = new int[][]{};
         arr = new int[sizeX][sizeY];
     }
 
-    private int[][] putWallsNExits(int[][] field) {
-        //exit
-        field[1][4] = 0;
-        field[4][4] = 0;
-        field[4][1] = 0;
+    public int[][] getArr() {
+        return arr;
+    }
 
-        //walls
+
+    public int changeCount(int a, int b) {
+        return arr[a][b] += 1;
+    }
+
+    public void setArrIndex(int a, int b, int count) {
+        arr[a][b] = count;
+    }
+
+    private int[][] putWalls(int[][] field) {
         field[2][4] = -1;
         field[3][1] = -1;
         field[3][2] = -1;
@@ -31,25 +37,23 @@ class Field {
         }
     }
 
-    public int[][] fillField() {
+    public void fillField() {
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[i].length; j++) {
                 arr[i][j] = -1;
             }
         }
 
-        int maxIdx = arr.length - 1;
         for (int i = 0; i < arr.length; i++) {
             for (int j = 1; j < arr.length; j++) {
                 if (i > 0 && i < arr.length - 1) {
                     if (j == 1 || j < arr.length - 1) {
-                        arr[i][j] = 1;
+                        arr[i][j] = 0;
                     }
                 }
             }
         }
 
-        arr = putWallsNExits(arr);
-        return arr;
+        arr = putWalls(arr);
     }
 }
